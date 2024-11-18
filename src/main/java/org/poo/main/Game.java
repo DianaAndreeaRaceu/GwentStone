@@ -363,6 +363,14 @@ public final class Game {
         Hero hero = target.getHero();
 
         if (attack.getIsFrozen() == 1) {
+            // Adăugăm informațiile despre atacator și țintă în răspuns
+            ObjectNode cardAttacker = mapper.createObjectNode();
+            cardAttacker.put("x", attackX);
+            cardAttacker.put("y", attackY);
+            result.set("cardAttacker", cardAttacker);
+
+            // Adăugăm comanda în răspuns
+            result.put("command", "useAttackHero");
             result.put("error", "Attacker card is frozen.");
         } else if (attack.getHasAttacked() == 1) {
             // Adăugăm informațiile despre atacator și țintă în răspuns
@@ -390,7 +398,6 @@ public final class Game {
 
                 // Adăugăm comanda în răspuns
                 result.put("command", "useAttackHero");
-                result.put("error", "Attacker card has already attacked this turn.");
                 result.put("error", "Attacked card is not of type 'Tank'.");
             } else {
                 hero.setHealth(hero.getHealth() - attack.getAttackDamage());
