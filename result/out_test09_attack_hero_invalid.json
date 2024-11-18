@@ -10,7 +10,7 @@
     "x" : 0,
     "y" : 1
   },
-  "command" : "cardUsesAbility",
+  "command" : "useAttackHero",
   "error" : "Attacker card has already attacked this turn."
 }, {
   "command" : "getCardAtPosition",

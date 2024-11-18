@@ -363,14 +363,6 @@ public final class Game {
         Hero hero = target.getHero();
 
         if (attack.getIsFrozen() == 1) {
-            // Adăugăm informațiile despre atacator și țintă în răspuns
-            ObjectNode cardAttacker = mapper.createObjectNode();
-            cardAttacker.put("x", attackX);
-            cardAttacker.put("y", attackY);
-            result.set("cardAttacker", cardAttacker);
-
-            // Adăugăm comanda în răspuns
-            result.put("command", "cardUsesAbility");
             result.put("error", "Attacker card is frozen.");
         } else if (attack.getHasAttacked() == 1) {
             // Adăugăm informațiile despre atacator și țintă în răspuns
@@ -380,7 +372,7 @@ public final class Game {
             result.set("cardAttacker", cardAttacker);
 
             // Adăugăm comanda în răspuns
-            result.put("command", "cardUsesAbility");
+            result.put("command", "useAttackHero");
             result.put("error", "Attacker card has already attacked this turn.");
         } else {
             int targetRow;
@@ -390,12 +382,15 @@ public final class Game {
                 targetRow = 1;
             }
             if (tankInEnemy(targetRow) == 1) {
-                // Creează obiectul pentru coordonatele `cardAttacker`
+                // Adăugăm informațiile despre atacator și țintă în răspuns
                 ObjectNode cardAttacker = mapper.createObjectNode();
                 cardAttacker.put("x", attackX);
                 cardAttacker.put("y", attackY);
-                result.put("cardAttacker", cardAttacker);
+                result.set("cardAttacker", cardAttacker);
+
+                // Adăugăm comanda în răspuns
                 result.put("command", "useAttackHero");
+                result.put("error", "Attacker card has already attacked this turn.");
                 result.put("error", "Attacked card is not of type 'Tank'.");
             } else {
                 hero.setHealth(hero.getHealth() - attack.getAttackDamage());
