@@ -1,0 +1,35 @@
+commit 765f26ef8387d4e89bbf0244787f0cc33cece3d0
+Author: Raceu Diana <student@stud.acs.upb.ro>
+Date:   Tue Nov 19 18:02:35 2024 +0200
+
+    Am adaugat o parte din readme-ul meu
+
+commit f67295adf3f0297ceced60d5814ecb1c8100c10a
+Author: Raceu Diana <student@stud.acs.upb.ro>
+Date:   Tue Nov 19 18:00:35 2024 +0200
+
+    Am rezolvat erorile de style.
+
+commit 2fcc0351f28d8a01b417289bd7877428ee9d5550
+Author: Raceu Diana <student@stud.acs.upb.ro>
+Date:   Mon Nov 18 21:10:12 2024 +0200
+
+    Am modificat afisarea in functia de attackHero
+
+commit eb6e71418cd0d95587e77683e0d1409b3ca0a3d8
+Author: Raceu Diana <student@stud.acs.upb.ro>
+Date:   Mon Nov 18 21:03:20 2024 +0200
+
+    Prima incarcare
+
+commit 98099921c544c46bea62739a01ba4b4c2c28135a
+Author: Raceu Diana <student@stud.acs.upb.ro>
+Date:   Mon Nov 18 20:51:39 2024 +0200
+
+    Prima incarcare
+
+commit 208a2bcd5485735ff895d4a214d876f27ecc78aa
+Author: DianaAndreeaRaceu <diana_andreea.raceu@stud.acs.upb.ro>
+Date:   Mon Nov 18 15:36:12 2024 +0200
+
+    Initial commit

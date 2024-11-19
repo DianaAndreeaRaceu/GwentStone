@@ -18,10 +18,13 @@ Clase :	-Card
 
 1. CLASA CARD
 
-	Contine: -campurile private	a)name (de tip String)
-					b)mana (de tip int)
-					c)description (de tip String)
-					d)colors (o lista de Stringuri)
+	Contine: -campurile private	 a)name (de tip String)
+	
+					 b)mana (de tip int)
+					 
+					 c)description (de tip String)
+					 
+					 d)colors (o lista de Stringuri)
 					
 		 -constructorul, care initializeaza fiecare camp cu valorie
 		  primite ca parametrii
@@ -35,14 +38,14 @@ Clase :	-Card
 
 	Este o extensie a clasei "Card".
 	
-	Contine: - campurile private 	a)health (de tip int) ->retine health-ul minionului
+	Contine: - campurile private 	 a)health (de tip int) ->retine health-ul minionului
 					
-					b)attackDamage (de tip int) ->retine punctele pentru damage
+					 b)attackDamage (de tip int) ->retine punctele pentru damage
 					
-					c)hasAttacked (de tip int) -> retine daca atacul/abilitatea
+					 c)hasAttacked (de tip int) -> retine daca atacul/abilitatea
 					 			      minionului a fost folosita
 					
-					d)isFrozen (de tip int) -> retine daca minionul este sau nu
+					 d)isFrozen (de tip int) -> retine daca minionul este sau nu
 								   inghetat
 		
 		 -constructorul, care initializeaza campurile din clasa Card 
@@ -131,12 +134,12 @@ Clase :	-Card
 
 	Este o extensie a clasei "Card".
 	
-	Contine: - campurile private 	a)health (de tip int) ->retine health-ul eroului
+	Contine: - campurile private 	 a)health (de tip int) ->retine health-ul eroului
 	
-					b)abilityUsed (de tip int) -> retine daca abilitatea
+					 b)abilityUsed (de tip int) -> retine daca abilitatea
 					 			      eroului a fost folosita
 					 			      
-					c)DEFAULT_HEALTH (de tip int) -> contine health-ul
+					 c)DEFAULT_HEALTH (de tip int) -> contine health-ul
 					 				 initial al eroului (30)
 		
 		 - constructorul, care initializeaza campurile din clasa Card (clasa pe care
@@ -203,21 +206,21 @@ Clase :	-Card
 		 	
 12. CLASA PLAYER 
 
-	Contine: - campurile private	a)mana (de tip int) -> retine mana jucatorului
+	Contine: - campurile private	 a)mana (de tip int) -> retine mana jucatorului
 	
-					b)increaseMana (de tip int) -> retine cu cat creste mana
+					 b)increaseMana (de tip int) -> retine cu cat creste mana
 					  			       jucatorului in fiecare runda
 					  
-					c)LIMIT_MANA (de tip int) -> retine limita maxima de crestere
+					 c)LIMIT_MANA (de tip int) -> retine limita maxima de crestere
 					  			     a manei per runda
 					  
-					d)hero (de tip Hero) -> retine eroul jucatorului
+					 d)hero (de tip Hero) -> retine eroul jucatorului
 					
-					e)hand (lista de Card) -> retine cartile din mana jucatorului
+					 e)hand (lista de Card) -> retine cartile din mana jucatorului
 					
-					f)deck (lista de Card) -> retine cartile din pachetul jactorului
+					 f)deck (lista de Card) -> retine cartile din pachetul jactorului
 					
-					g)turnEnded (de tip int) -> retine daca a fost sau nu randul
+					 g)turnEnded (de tip int) -> retine daca a fost sau nu randul
 					  			    jucatorului in runda curenta
 					
 		 -constructorul, care initializeaza campurile mana, hand, hero si deck cu parmetrii
@@ -253,11 +256,11 @@ Clase :	-Card
 13. CLASA BOARD
 
 
-	Contine: - campurile private	a)minion (o martrice de minioni) -> retine tabla de joc
+	Contine: - campurile private	 a)minion (o martrice de minioni) -> retine tabla de joc
 	
-					b)ROWS (de tip int) -> retine numarul de linii al matricei
+					 b)ROWS (de tip int) -> retine numarul de linii al matricei
 					
-					c)COLUMNS (de tip int) -> retine numarul de coloane al matricei
+					 c)COLUMNS (de tip int) -> retine numarul de coloane al matricei
 					
 					
 		 -constructorul, care initializeaza matricea cu dimensiunile ROWS si COLUMNS
@@ -440,11 +443,36 @@ Clase :	-Card
 		 	  joc si se fac aceleasi verificari ca si pentru prima jumatate. Daca nu se gaseste nicio 
 		 	  carte de tip tank in parcurgere, se va returna 0.
 		 	
-		 	k)cardAttack() -
+		 	k)cardAttack() - Aceasta functie gestioneaza atacul intre doua carti de pe tabla, 
+		 	  verificand validitatea operatiei si respectarea regulilor jocului. Functia primeste 
+		 	  coordonatele atacatorului si tintei si verifica daca tinta apartine adversarului, daca 
+		 	  atacatorul este inghetat sau a atacat deja in acest tur si daca tinta este de tip Tank, 
+		 	  in cazul în care sunt prezente astfel de carți pe randul adversarului. In caz de eroare, 
+		 	  functia returneaza un obiect JSON care contine comanda executata, coordonatele 
+		 	  atacatorului si tintei, si un mesaj de eroare descriptiv. Daca toate verificarile sunt 
+		 	  trecute, functia actualizeaza starea jocului, aplica daune tintei si o elimina de pe 
+		 	  tabla daca health-ul acesteia scade sub 0. 
 		 	
-		 	l)useCardAbility() -
+		 	l)useCardAbility() - Aceasta functie gestioneaza utilizarea abilitatii speciale a unei 
+		 	  carti de pe tabla, verificand validitatea operatiei si respectarea regulilor jocului. 
+		 	  Functia primeste coordonatele cartii care foloseste abilitatea si ale tintei acesteia 
+		 	  si efectueaza verificari pentru a se asigura ca actiunea este permisa. In caz de eroare, 
+		 	  functia returneaza un obiect JSON care contine comanda executata, coordonatele atacatorului 
+		 	  si tintei, precum si un mesaj de eroare descriptiv. Daca toate verificarile sunt trecute, 
+		 	  functia aplica abilitatea asupra tintei, actualizeaza starea jocului si marcheaza cartea 
+		 	  ca utilizata. Daca toate verificarile sunt satisfacute, functia creeaza o copie temporara 
+		 	  a cartii care foloseste abilitatea si aplica efectele acesteia asupra tintei. In cazul in 
+		 	  care sanatatea tintei scade la 0, aceasta este eliminata de pe tabla.
 		 	
-		 	m)attackHero() - 
+		 	m)attackHero() - Aceasta functie gestioneaza atacul unui minion asupra eroului adversar, 
+		 	  verificand validitatea operatiei si aplicand daune daca regulile jocului sunt respectate. 
+		 	  Functia primeste coordonatele minionului atacator si determina eroul adversar in functie de 
+		 	  jucatorul curent. In caz de eroare, returneaza un obiect JSON care contine comanda executata, 
+		 	  coordonatele atacatorului si un mesaj descriptiv al erorii. Daca toate verificarile sunt 
+		 	  trecute, functia aplica daune eroului adversar prin scaderea punctelor de viata ale acestuia cu 
+		 	  valoarea atacului minionului. Minionul este marcat ca utilizat pentru acest tur. Daca viata 
+		 	  eroului scade sub 0, jocul se incheie, iar functia returneaza un mesaj care indica victoria 
+		 	  jucatorului curent.
 		 	
 		 	n)gameOver() - Este metoda care marcheaza sfarsitul jocului si se ocupa de statistici, 
 		 	  primind ca parametru jucatorul castigator. Creste numarul de jocuri jucate si in functie 
@@ -458,29 +486,102 @@ Clase :	-Card
 		 	  sau 3 (randurile jucatorului 1), atunci returneaza 1 (este rand inamic), altfel retuneaza 
 		 	  0 (nu e rand inamic).
 		 	
-		 	p)useHeroAbility() - 
+		 	p)useHeroAbility() - Aceasta functie gestioneaza utilizarea abilitatii speciale a eroului, 
+		 	  verificand validitatea actiunii si respectarea regulilor jocului. Functia primeste coordonata 
+		 	  randului asupra caruia abilitatea va fi aplicata si determina eroul asociat jucatorului curent. 
+		 	  Daca jucatorul nu are un erou atribuit, returneaza o eroare indicand acest lucru. Functia 
+		 	  verifica daca jucatorul are suficienta mana pentru a utiliza abilitatea eroului. In cazul in 
+		 	  care mana este insuficienta, returneaza o eroare corespunzatoare. De asemenea, verifica daca 
+		 	  abilitatea eroului a fost deja utilizata in acest tur. Daca da, returneaza o eroare care indica 
+		 	  faptul ca abilitatea nu poate fi reutilizata.Daca toate verificarile sunt trecute, functia creeaza 
+		 	  o copie temporara a eroului, aplica abilitatea asupra randului selectat si marcheaza abilitatea ca 
+		 	  utilizata. De asemenea, actualizeaza starea jocului, scazand mana corespunzatoare din resursele 
+		 	  jucatorului curent. Aceasta functie este cruciala pentru implementarea mecanicilor speciale ale 
+		 	  eroilor si mentinerea corecta a starii jocului.
 		 	
-		 	q)getCardsInHand() -
+		 	q)getCardsInHand() - Aceasta functie returneaza un obiect JSON care contine informatii despre cartile 
+		 	  aflate in mana unui jucator. Se initializeaza un obiect JSON care include comanda executata si indexul 
+		          jucatorului, precum si un array in care vor fi stocate informatiile despre fiecare carte din mana.
+		 	   Functia parcurge toate cartile din mana jucatorului selectat. Pentru fiecare carte, creeaza un 
+		 	  obiect JSON care include detalii precum costul in mana (mana), valoarea atacului (attackDamage), 
+		 	  viata (health), descrierea cartii si culorile asociate. Fiecare culoare este adaugata intr-un array 
+		 	  JSON separat care este inclus in descrierea cartii. De asemenea, se adauga numele cartii in obiectul 
+		 	  JSON.Obiectele JSON corespunzatoare fiecarei carti sunt adaugate in array-ul cardsArray. La final, 
+		 	  acest array este setat ca output in obiectul principal result. Functia returneaza un obiect JSON complet 
+		 	  care contine detaliile cerute despre cartile din mana jucatorului. 
 		 	
-		 	r)getPlayerDeck() - 
+		 	r)getPlayerDeck() - Aceasta functie returneaza un obiect JSON care contine detalii despre 
+		 	 deck-ul unui jucator selectat. Functia primeste ca parametru indexul jucatorului (playerIdx)
+		 	 si identifica jucatorul corespunzator. Se initializeaza un obiect JSON care include comanda 
+		 	 executata, indexul jucatorului si un array pentru cartile din deck.Functia verifica daca 
+		 	 deck-ul jucatorului este initializat. Daca deck-ul este valid, fiecare carte este parcursa 
+		 	 intr-un for normal. Pentru fiecare carte, se creeaza un obiect JSON care include detalii 
+		 	 precum costul in mana (mana), valoarea atacului (attackDamage), viata (health), descrierea 
+		 	 cartii si culorile acesteia. Culorile sunt adaugate intr-un array separat, care este inclus 
+		 	 in obiectul JSON al cartii. Numele cartii este adaugat la final.Obiectele JSON corespunzatoare 
+		 	 fiecarei carti sunt adaugate in array-ul de output. La final, acest array este atasat la 
+		 	 rezultatul principal result.
 		 	
-		 	s)getCardsOnTable() - 
+		 	s)getCardsOnTable() - Aceasta functie returneaza un obiect JSON care contine detalii despre 
+		 	  toate cartile aflate pe tabla de joc. Functia apeleaza metoda getCardsOnBoard a obiectului 
+		 	  board pentru a obtine starea actuala a tablei de joc sub forma unui JSON. La rezultatul 
+		 	  obtinut, functia adauga comanda executata ("getCardsOnTable") pentru a indica scopul actiunii.
 		 	
-		 	t)getPlayerTurn() -
+		 	t)getPlayerTurn() - Aceasta functie returneaza un obiect JSON care indica jucatorul al carui tur
+		 	  este in prezent. Functia creeaza un obiect JSON folosind ObjectMapper si adauga comanda executata 
+		 	  ("getPlayerTurn") pentru a specifica scopul actiunii. In campul "output", functia adauga indexul 
+		 	  jucatorului curent (currentPlayer), reprezentand fie 1, fie 2, in functie de starea jocului.
 		 	
-		 	u)getPlayerHero() - 
+		 	u)getPlayerHero() - Aceasta functie returneaza un obiect JSON care contine detalii despre eroul unui
+		 	  jucator specificat. Functia primeste ca parametru indexul jucatorului (playerIdx) si identifica
+		 	   jucatorul corespunzator (jucatorul 1 sau jucatorul 2). Se creeaza un obiect JSON care include
+		 	   comanda executata ("getPlayerHero") si indexul jucatorului.
 		 	
-		 	v)getCardAtPosition() - 
+		 	v)getCardAtPosition() - Aceasta functie returneaza un obiect JSON care contine detalii despre o 
+		 	  carte aflata la o pozitie specifica pe tabla de joc. Functia primeste coordonatele x si y si 
+		 	  apeleaza metoda getCard a obiectului board pentru a verifica daca exista o carte la acea pozitie.
+		 	  Se initializeaza un obiect JSON care include comanda executata ("getCardAtPosition") si 
+		 	  coordonatele specificate.Daca exista o carte la pozitia data, functia creeaza un obiect JSON 
+		 	  cu detalii despre carte, incluzand costul in mana (mana), atacul (attackDamage), viata (health), 
+		 	  descrierea si culorile acesteia. Culorile sunt adaugate intr-un array JSON folosind un for normal. 
+		 	  Numele cartii este adaugat la final, iar obiectul rezultat este atasat campului "output" al 
+		 	  rezultatului.Daca nu exista nicio carte la pozitia specificata, functia seteaza mesajul "No card 
+		 	  available at that position." in campul "output".
 		 	
-		 	w)getPlayerMana() -
+		 	w)getPlayerMana() - Aceasta functie returneaza un obiect JSON care contine informatii despre mana 
+		 	 disponibila a unui jucator specific. Functia primeste ca parametru indexul jucatorului (playerIdx) 
+		 	 si determina mana jucatorului 1 sau 2, in functie de acest index. Se initializeaza un obiect JSON 
+		 	 care include comanda executata ("getPlayerMana") si indexul jucatorului.Mana disponibila este obtinuta 
+		 	 fie de la player1, fie de la player2, in functie de index, si este adaugata in campul "output" al 
+		 	 rezultatului JSON. 
 		 	
-		 	x)getFrozenCardsOnTable() - 
+		 	x)getFrozenCardsOnTable() - Aceasta functie returneaza un obiect JSON care contine informatii 
+		 	  despre toate cartile inghetate aflate pe tabla de joc. Functia apeleaza metoda getFreezedOnBoard 
+		 	  a obiectului board pentru a obtine starea actuala a tablei, filtrand cartile care sunt marcate 
+		 	  ca inghetate. Se initializeaza un obiect JSON care include comanda executata ("getFrozenCardsOnTable").
+		 	  Rezultatul JSON contine detalii despre cartile inghetate, inclusiv pozitia si alte informatii 
+		 	  despre acestea, in functie de implementarea metodei getFreezedOnBoard.
 		 	
 
 16. CLASA MAIN
 
 
-	Metode:	-action() - 
+	Metode:	-action() - Aceasta metoda reprezinta punctul central de executie pentru simularile jocului, 
+	      	 preluand datele de intrare dintr-un fisier si generand un fisier de iesire cu rezultatele 
+	      	 actiunilor. Metoda primeste ca parametri calea fisierului de intrare si a celui de iesire. 
+	      	 Datele de intrare sunt parcurse pentru fiecare joc simulat, iar actiunile sunt executate in 
+	      	 functie de comenzile specificate. Procesul incepe prin incarcarea datelor despre jucatori, 
+	      	 eroi, pachetele de carti si actiuni din fisierul de intrare. Deck-urile sunt amestecate 
+	      	 folosind o cheie de shuffle si sunt initializati eroii si tabla de joc. Pentru fiecare comanda 
+	      	 din lista de actiuni, metoda apeleaza functii specifice, cum ar fi plasarea cartilor, atacurile, 
+	      	 utilizarea abilitatilor eroului, sau intoarcerea statisticilor jocului. Rezultatele fiecarei 
+	      	 comenzi sunt colectate intr-un array JSON si scrise in fisierul de iesire. Aceasta metoda este 
+	      	 esentiala pentru gestionarea fluxului de simulare si integrarea actiunilor jocului.
 	
-		-buildDeck() - 		 	
+		 -buildDeck() - Aceasta metoda construieste un pachet de carti (deck) pornind de la o lista de 
+		 intrari pentru carti (CardInput). Parcurge fiecare intrare din lista si creeaza obiecte de tip 
+		 Minion daca acestea au valori valide pentru atac si viata. Cartile generate sunt adaugate in 
+		 lista de pachete si returnate la final. Metoda este utilizata pentru a traduce datele de intrare 
+		 in obiecte utilizabile in joc. Aceasta asigura corectitudinea configurarii pachetelor de carti 
+		 pentru fiecare jucator.	
 		 	

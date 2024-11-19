@@ -198,7 +198,6 @@ public final class Game {
         Minion attack = board.getCard(attackX, attackY);
         Minion target = board.getCard(targetX, targetY);
 
-        // Adăugăm informațiile despre atacator și țintă în răspuns
         ObjectNode cardAttacker = mapper.createObjectNode();
         cardAttacker.put("x", attackX);
         cardAttacker.put("y", attackY);
@@ -261,13 +260,10 @@ public final class Game {
             cardAttacked.put("y", targetY);
             result.set("cardAttacked", cardAttacked);
 
-            // Adăugăm comanda în răspuns
             result.put("command", "cardUsesAbility");
-
             result.put("error", "Attacker card is frozen.");
             return result;
         } else if (attack.getHasAttacked() == 1) {
-            // Adăugăm informațiile despre atacator și țintă în răspuns
             ObjectNode cardAttacker = mapper.createObjectNode();
             cardAttacker.put("x", attackX);
             cardAttacker.put("y", attackY);
@@ -278,16 +274,13 @@ public final class Game {
             cardAttacked.put("y", targetY);
             result.set("cardAttacked", cardAttacked);
 
-            // Adăugăm comanda în răspuns
             result.put("command", "cardUsesAbility");
-
             result.put("error", "Attacker card has already attacked this turn.");
             return result;
         } else if (Objects.equals(attack.getName(), "Disciple")) {
 
             if ((attackX >= board.getRows() / 2 && targetX < board.getRows() / 2)
                     || (attackX < board.getRows() / 2 && targetX >= board.getRows() / 2)) {
-                // Adăugăm informațiile despre atacator și țintă în răspuns
                 ObjectNode cardAttacker = mapper.createObjectNode();
                 cardAttacker.put("x", attackX);
                 cardAttacker.put("y", attackY);
@@ -298,9 +291,7 @@ public final class Game {
                 cardAttacked.put("y", targetY);
                 result.set("cardAttacked", cardAttacked);
 
-                // Adăugăm comanda în răspuns
                 result.put("command", "cardUsesAbility");
-
                 result.put("error", "Attacked card does not belong to the current player.");
                 return result;
             }
@@ -309,7 +300,6 @@ public final class Game {
                 || Objects.equals(attack.getName(), "The Cursed One")) {
             if ((attackX >= board.getRows() / 2 && targetX >= board.getRows() / 2)
                     || (attackX < board.getRows() / 2 && targetX < board.getRows() / 2)) {
-                // Adăugăm informațiile despre atacator și țintă în răspuns
                 ObjectNode cardAttacker = mapper.createObjectNode();
                 cardAttacker.put("x", attackX);
                 cardAttacker.put("y", attackY);
@@ -320,13 +310,10 @@ public final class Game {
                 cardAttacked.put("y", targetY);
                 result.set("cardAttacked", cardAttacked);
 
-                // Adăugăm comanda în răspuns
                 result.put("command", "cardUsesAbility");
-
                 result.put("error", "Attacked card does not belong to the enemy.");
                 return result;
             } else if (tankInEnemy(targetX) == 1 && target.isTank() == 0) {
-                // Adăugăm informațiile despre atacator și țintă în răspuns
                 ObjectNode cardAttacker = mapper.createObjectNode();
                 cardAttacker.put("x", attackX);
                 cardAttacker.put("y", attackY);
@@ -337,9 +324,7 @@ public final class Game {
                 cardAttacked.put("y", targetY);
                 result.set("cardAttacked", cardAttacked);
 
-                // Adăugăm comanda în răspuns
                 result.put("command", "cardUsesAbility");
-
                 result.put("error", "Attacked card is not of type 'Tank'.");
                 return result;
             }
@@ -372,53 +357,50 @@ public final class Game {
         Hero hero = target.getHero();
 
         if (attack.getIsFrozen() == 1) {
-            // Adăugăm informațiile despre atacator și țintă în răspuns
             ObjectNode cardAttacker = mapper.createObjectNode();
             cardAttacker.put("x", attackX);
             cardAttacker.put("y", attackY);
             result.set("cardAttacker", cardAttacker);
 
-            // Adăugăm comanda în răspuns
             result.put("command", "useAttackHero");
             result.put("error", "Attacker card is frozen.");
-        } else if (attack.getHasAttacked() == 1) {
-            // Adăugăm informațiile despre atacator și țintă în răspuns
+            return result;
+        }
+
+        if (attack.getHasAttacked() == 1) {
             ObjectNode cardAttacker = mapper.createObjectNode();
             cardAttacker.put("x", attackX);
             cardAttacker.put("y", attackY);
             result.set("cardAttacker", cardAttacker);
 
-            // Adăugăm comanda în răspuns
             result.put("command", "useAttackHero");
             result.put("error", "Attacker card has already attacked this turn.");
+            return result;
+        }
+        int targetRow;
+        if (target == player1) {
+            targetRow = 2;
         } else {
-            int targetRow;
-            if (target == player1) {
-                targetRow = 2;
-            } else {
-                targetRow = 1;
-            }
-            if (tankInEnemy(targetRow) == 1) {
-                // Adăugăm informațiile despre atacator și țintă în răspuns
-                ObjectNode cardAttacker = mapper.createObjectNode();
-                cardAttacker.put("x", attackX);
-                cardAttacker.put("y", attackY);
-                result.set("cardAttacker", cardAttacker);
+            targetRow = 1;
+        }
+        if (tankInEnemy(targetRow) == 1) {
+            ObjectNode cardAttacker = mapper.createObjectNode();
+            cardAttacker.put("x", attackX);
+            cardAttacker.put("y", attackY);
+            result.set("cardAttacker", cardAttacker);
 
-                // Adăugăm comanda în răspuns
-                result.put("command", "useAttackHero");
-                result.put("error", "Attacked card is not of type 'Tank'.");
-            } else {
-                hero.setHealth(hero.getHealth() - attack.getAttackDamage());
-                attack.setHasAttacked(1);
-                if (hero.getHealth() <= 0) {
-                    if (currentPlayer == 2) {
-                        result.put("gameEnded", "Player two killed the enemy hero.");
-                        gameOver(player2);
-                    } else {
-                        result.put("gameEnded", "Player one killed the enemy hero.");
+            result.put("command", "useAttackHero");
+            result.put("error", "Attacked card is not of type 'Tank'.");
+        } else {
+            hero.setHealth(hero.getHealth() - attack.getAttackDamage());
+            attack.setHasAttacked(1);
+            if (hero.getHealth() <= 0) {
+                if (currentPlayer == 2) {
+                    result.put("gameEnded", "Player two killed the enemy hero.");
+                    gameOver(player2);
+                } else {
+                    result.put("gameEnded", "Player one killed the enemy hero.");
                         gameOver(player1);
-                    }
                 }
             }
         }
@@ -480,13 +462,17 @@ public final class Game {
             result.put("error", "Not enough mana to use hero's ability.");
             return result;
 
-        } else if (hero.getAbilityUsed() == 1) {
+        }
+
+        if (hero.getAbilityUsed() == 1) {
             result.put("affectedRow", abilityX);
             result.put("command", "useHeroAbility");
             result.put("error", "Hero has already attacked this turn.");
             return result;
 
-        } else if ((Objects.equals(hero.getName(), "Lord Royce")
+        }
+
+        if ((Objects.equals(hero.getName(), "Lord Royce")
                 || Objects.equals(hero.getName(), "Empress Thorina"))
                 && enemyRow(player, abilityX) == 0) {
 
@@ -495,7 +481,9 @@ public final class Game {
             result.put("error", "Selected row does not belong to the enemy.");
             return result;
 
-        } else if ((Objects.equals(hero.getName(), "King Mudface")
+        }
+
+        if ((Objects.equals(hero.getName(), "King Mudface")
                 || Objects.equals(hero.getName(), "General Kocioraw"))
                 && enemyRow(player, abilityX) == 1) {
 
@@ -524,46 +512,28 @@ public final class Game {
         }
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode result = objectMapper.createObjectNode();
-
-        // Adăugăm "command" pentru a indica acțiunea
         result.put("command", "getCardsInHand");
         result.put("playerIdx", playerIdx);
-
-
-        // Creăm un ArrayNode pentru a stoca cărțile din mână
         ArrayNode cardsArray = objectMapper.createArrayNode();
 
-        // Parcurgem mâna jucătorului folosind un for clasic
         for (int i = 0; i < player.getHand().size(); i++) {
             Card card = player.getHand().get(i);
             ObjectNode cardNode = objectMapper.createObjectNode();
             cardNode.put("mana", card.getMana());
-
-            if (card instanceof Minion) {
-                Minion minionCard = (Minion) card;
-                cardNode.put("attackDamage", minionCard.getAttackDamage());
-                cardNode.put("health", minionCard.getHealth());
-            }
-
+            Minion minionCard = (Minion) card;
+            cardNode.put("attackDamage", minionCard.getAttackDamage());
+            cardNode.put("health", minionCard.getHealth());
             cardNode.put("description", card.getDescription());
 
-            // Adăugăm culorile cărții într-un ArrayNode
             ArrayNode colors = objectMapper.createArrayNode();
             for (int j = 0; j < card.getColors().size(); j++) {
                 colors.add(card.getColors().get(j));
             }
             cardNode.set("colors", colors);
-
-            // Adăugăm numele cărții
             cardNode.put("name", card.getName());
-
-            // Adăugăm obiectul `cardNode` în `cardsArray`
             cardsArray.add(cardNode);
         }
-
-        // Setăm lista de cărți în câmpul "output"
         result.set("output", cardsArray);
-
         return result;
     }
 
@@ -577,45 +547,32 @@ public final class Game {
         } else {
             player = player2;
         }
-        // Construim răspunsul JSON
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode result = objectMapper.createObjectNode();
-
-        // Adăugăm comanda și indexul jucătorului
         result.put("command", "getPlayerDeck");
         result.put("playerIdx", playerIdx);
-
-        // Construim lista de cărți ca un ArrayNode
         ArrayNode outputArray = objectMapper.createArrayNode();
 
-        // Iterăm prin fiecare carte din deck-ul jucătorului
-        if (player.getDeck() != null) { // Asigurăm că deck-ul nu este null
-            for (Card card : player.getDeck()) {
+        if (player.getDeck() != null) {
+            for (int i = 0; i < player.getDeck().size(); i++) {
+                Card card = player.getDeck().get(i);
                 ObjectNode cardNode = objectMapper.createObjectNode();
                 cardNode.put("mana", card.getMana());
 
-                cardNode.put("attackDamage", ((Minion) card).getAttackDamage());
-                cardNode.put("health", ((Minion) card).getHealth());
+                Minion minionCard = (Minion) card;
+                cardNode.put("attackDamage", minionCard.getAttackDamage());
+                cardNode.put("health", minionCard.getHealth());
                 cardNode.put("description", card.getDescription());
 
-                // Adăugăm culorile cărții într-un ArrayNode
                 ArrayNode colorsArray = objectMapper.createArrayNode();
-                for (String color : card.getColors()) {
-                    colorsArray.add(color);
+                for (int j = 0; j < card.getColors().size(); j++) {
+                    colorsArray.add(card.getColors().get(j));
                 }
                 cardNode.set("colors", colorsArray);
-
-                // Adăugăm numele cărții
                 cardNode.put("name", card.getName());
-
-                // Adăugăm cartea în lista de output
                 outputArray.add(cardNode);
             }
-        } else {
-            System.out.println("Deck is not initialized.");
         }
-
-        // Adăugăm lista de cărți la rezultatul final
         result.set("output", outputArray);
         return result;
     }
@@ -650,16 +607,12 @@ public final class Game {
         } else {
             player = player2;
         }
-        // Construim răspunsul JSON și adăugăm întâi "command" și "playerIdx"
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode result = objectMapper.createObjectNode();
         result.put("command", "getPlayerHero");
         result.put("playerIdx", playerIdx);
-
-        // Creăm un sub-obiect pentru detaliile eroului
         ObjectNode heroInfo = player.getHeroCard();
         result.set("output", heroInfo);
-
         return result;
     }
 
@@ -670,38 +623,28 @@ public final class Game {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
 
-        // Adăugăm comanda și coordonatele la rezultat
         result.put("command", "getCardAtPosition");
         result.put("x", x);
         result.put("y", y);
 
-        // Obținem cartea de la poziția specificată
         Minion card = board.getCard(x, y);
-
-        // Verificăm dacă există o carte la poziția specificată
         if (card != null) {
-            // Creăm un nod pentru detaliile cărții
             ObjectNode cardNode = mapper.createObjectNode();
             cardNode.put("mana", card.getMana());
             cardNode.put("attackDamage", card.getAttackDamage());
             cardNode.put("health", card.getHealth());
             cardNode.put("description", card.getDescription());
 
-            // Adăugăm culorile cărții într-un ArrayNode
             ArrayNode colors = mapper.createArrayNode();
-            for (String color : card.getColors()) {
-                colors.add(color);
+            for (int i = 0; i < card.getColors().size(); i++) {
+                colors.add(card.getColors().get(i));
             }
             cardNode.set("colors", colors);
             cardNode.put("name", card.getName());
-
-            // Adăugăm nodul card la rezultatul final
             result.set("output", cardNode);
         } else {
-            // Dacă nu există o carte la acea poziție, setăm mesajul de eroare
             result.put("output", "No card available at that position.");
         }
-
         return result;
     }
 
