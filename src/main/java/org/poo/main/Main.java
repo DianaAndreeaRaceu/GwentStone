@@ -70,16 +70,11 @@ public final class Main {
         Input inputData = objectMapper.readValue(new File(CheckerConstants.TESTS_PATH + filePath1),
                 Input.class);
         ArrayNode output = objectMapper.createArrayNode();
-        DecksInput decksPlayerOne = inputData.getPlayerOneDecks();
-        DecksInput decksPlayerTwo = inputData.getPlayerTwoDecks();
-        ArrayList<ArrayList<CardInput>> decksOne = decksPlayerOne.getDecks();
-        ArrayList<ArrayList<CardInput>> decksTwo = decksPlayerTwo.getDecks();
+
         ArrayList<GameInput> games = inputData.getGames();
         Statistics gameStatistics = new Statistics();
         for (int i = 0; i < games.size(); i++) {
             StartGameInput startGame = games.get(i).getStartGame();
-            int playerOneDeckIdx = startGame.getPlayerOneDeckIdx();
-            int playerTwoDeckIdx = startGame.getPlayerTwoDeckIdx();
 
             ArrayList<Card> playerOneDeck = buildDeck(inputData.getPlayerOneDecks()
                     .getDecks().get(startGame.getPlayerOneDeckIdx()));

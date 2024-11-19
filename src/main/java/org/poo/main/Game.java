@@ -26,6 +26,9 @@ public final class Game {
         this.currentPlayer = currentPlayer;
     }
 
+    /**
+     *Return the current player.
+     */
     public Player getCurrentPlayer() {
         if (currentPlayer == 1) {
             return player1;
@@ -33,6 +36,9 @@ public final class Game {
         return player2;
     }
 
+    /**
+     *Unfreeze player one's cards on board.
+     */
     public void unfreezeCardsPlayer1() {
         for (int x = 2; x < board.getRows(); x++) {
             for (int y = 0; y < board.getColumns(); y++) {
@@ -43,6 +49,9 @@ public final class Game {
         }
     }
 
+    /**
+     *Unfreeze player two's cards on board.
+     */
     public void unfreezeCardsPlayer2() {
         for (int x = 0; x < board.getRows() / 2; x++) {
             for (int y = 0; y < board.getColumns(); y++) {
@@ -53,6 +62,9 @@ public final class Game {
         }
     }
 
+    /**
+     *Switch the players
+     */
     private void switchPlayer() {
         if (currentPlayer == 1) {
             currentPlayer = 2;
@@ -61,6 +73,9 @@ public final class Game {
         }
     }
 
+    /**
+     *Begining of a new round
+     */
     public void startNextRound() {
         player1.resetTurn();
         player2.resetTurn();
@@ -72,13 +87,15 @@ public final class Game {
         player2.addCard();
 
         board.resetHasAttackedForAllMinions();
-        //board.resetAbilityUsageForAllMinions();
 
         player1.getHero().setAbilityUsed(0);
         player2.getHero().setAbilityUsed(0);
 
     }
 
+    /**
+     *End of the round for the current player
+     */
     public void endTurn() {
         Player current = getCurrentPlayer();
         current.endTurn();
@@ -95,6 +112,9 @@ public final class Game {
         switchPlayer();
     }
 
+    /**
+     *This method is determining the row for a certain card.
+     */
     public int detRowForCard(final Player player, final Card card) {
         Minion minion = (Minion) card;
         if (player == player1) {
@@ -112,58 +132,41 @@ public final class Game {
         }
     }
 
+    /**
+     *Place one card on the board.
+     */
     public ObjectNode placeCard(final int indexHand) {
         ObjectMapper objectMapper = new ObjectMapper();
-        ObjectNode result = null;  // Inițializăm ca `null` pentru cazurile în care nu dorim output
-
+        ObjectNode result;
         Player current = getCurrentPlayer();
-
-        // Verificare index invalid
-        if (indexHand < 0 || indexHand >= current.getHand().size()) {
-            // Returnăm `null` pentru a ignora complet acest caz
-            return null;
-        }
-
         Card card = current.getHand().get(indexHand);
 
-        // Verificare mană insuficientă - adăugăm `command` și eroarea specificată
         if (card.getMana() > current.getMana()) {
             result = objectMapper.createObjectNode();
             result.put("command", "placeCard");
             result.put("handIdx", indexHand);
             result.put("error", "Not enough mana to place card on table.");
-            System.out.println("Not enough mana to place card on table.");
             return result;
         }
 
-        // Determinare rând pentru carte și verificare
         int row = detRowForCard(current, card);
-        if (row == -1) {
-            // Returnăm `null` pentru a ignora complet acest caz
-            return null;
-        }
-
-        // Verificare dacă rândul este plin - adăugăm `command` și eroarea specificată
         if (board.firstPositionFree(row) == -1) {
             result = objectMapper.createObjectNode();
             result.put("command", "placeCard");
             result.put("handIdx", indexHand);
             result.put("error", "Cannot place card on table since row is full.");
-            System.out.println("Cannot place card on table since row is full.");
             return result;
         }
 
-        // Actualizare mană și plasare carte pe masă dacă toate condițiile sunt îndeplinite
         current.setMana(current.getMana() - card.getMana());
         board.addMinion((Minion) card, row);
         current.getHand().remove(indexHand);
-
-        board.printBoard();
-        // Returnăm `null` pentru a nu include în output-ul final cazurile normale de succes
         return null;
     }
 
-
+    /**
+     *Return 1 if the enemy has tnaks on board, else return 0.
+     */
     public int tankInEnemy(final int targetX) {
         if (targetX < board.getRows() / 2) {
             for (int x = 0; x < board.getRows() / 2; x++) {
@@ -185,7 +188,9 @@ public final class Game {
         return 0;
     }
 
-    //atac inte carti
+    /**
+     *Card attack on board.
+     */
     public ObjectNode cardAttack(final int attackX, final int attackY,
                                  final int targetX, final int targetY) {
         ObjectMapper mapper = new ObjectMapper();
@@ -204,39 +209,40 @@ public final class Game {
         cardAttacked.put("y", targetY);
         result.set("cardAttacked", cardAttacked);
 
-        // Adăugăm comanda în răspuns
         result.put("command", "cardUsesAttack");
-
-        if (attack == null) {
-            result.put("error", "No card found at the specified position to attack.");
-            return result;
-        }
-
-        if (target == null) {
-            result.put("error", "No target card found at the specified position.");
-            return result;
-        }
 
         if ((currentPlayer == 2 && targetX < board.getRows() / 2)
                 || (currentPlayer == 1 && targetX >= board.getRows() / 2)) {
             result.put("error", "Attacked card does not belong to the enemy.");
-        } else if (attack.getHasAttacked() == 1) {
-            result.put("error", "Attacker card has already attacked this turn.");
-        } else if (attack.getIsFrozen() == 1) {
-            result.put("error", "Attacker card is frozen.");
-        } else if (tankInEnemy(targetX) == 1 && target.isTank() == 0) {
-            result.put("error", "Attacked card is not of type 'Tank'.");
-        } else {
-            attack.attack(target);
-            if (target.getHealth() <= 0) {
-                board.removeMinion(targetX, targetY);
-            }
-            return null; // Successfully attacked without error
+            return result;
         }
-        return result;
+
+        if (attack.getHasAttacked() == 1) {
+            result.put("error", "Attacker card has already attacked this turn.");
+            return result;
+        }
+
+        if (attack.getIsFrozen() == 1) {
+            result.put("error", "Attacker card is frozen.");
+            return result;
+        }
+
+        if (tankInEnemy(targetX) == 1 && target.isTank() == 0) {
+            result.put("error", "Attacked card is not of type 'Tank'.");
+            return result;
+        }
+
+        attack.attack(target);
+        if (target.getHealth() <= 0) {
+            board.removeMinion(targetX, targetY);
+        }
+        return null;
+
     }
 
-
+    /**
+     *Method for using card ability.
+     */
     public ObjectNode useCardAbility(final int attackX, final int attackY,
                                      final int targetX, final int targetY) {
         ObjectMapper mapper = new ObjectMapper();
@@ -338,8 +344,8 @@ public final class Game {
                 return result;
             }
         }
-        Minion minionTwo = attack.createMinion(attack.getName(), attack.getMana(), attack.getDescription(),
-                attack.getColors(), attack.getHealth(), attack.getAttackDamage());
+        Minion minionTwo = attack.createMinion(attack.getName(), attack.getMana(),
+                attack.getDescription(), attack.getColors());
 
         minionTwo.useAbility(attack, target);
         attack.setHasAttacked(1);
@@ -349,6 +355,9 @@ public final class Game {
         return result;
     }
 
+    /**
+     *Method for attacking the enemy hero.
+     */
     public ObjectNode attackHero(final int attackX, final int attackY) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
@@ -416,6 +425,9 @@ public final class Game {
         return result;
     }
 
+    /**
+     *Marks end of the game.
+     */
     public void gameOver(final Player winner) {
         gameStatistics.increaseGames();
         if (winner == player1) {
@@ -425,6 +437,9 @@ public final class Game {
         }
     }
 
+    /**
+     *Verify if one row belong to the enemy.
+     */
     public int enemyRow(final Player player, final int row) {
         if (player == player1) {
             if (row == 0 || row == 1) {
@@ -439,6 +454,9 @@ public final class Game {
         }
     }
 
+    /**
+     *Method for using hero's ability.
+     */
     public ObjectNode useHeroAbility(final int abilityX) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
@@ -494,6 +512,9 @@ public final class Game {
         return result;
     }
 
+    /**
+     *Show cards in player's hand.
+     */
     public ObjectNode getCardsInHand(final int playerIdx) {
         Player player;
         if (playerIdx == 1) {
@@ -546,6 +567,9 @@ public final class Game {
         return result;
     }
 
+    /**
+     *Show cards in player's deck.
+     */
     public ObjectNode getPlayerDeck(final int playerIdx) {
         Player player;
         if (playerIdx == 1) {
@@ -596,12 +620,18 @@ public final class Game {
         return result;
     }
 
+    /**
+     *Show the cards on table.
+     */
     public ObjectNode getCardsOnTable() {
         ObjectNode result = board.getCardsOnBoard();
         result.put("command", "getCardsOnTable");
         return result;
     }
 
+    /**
+     *Show the current player.
+     */
     public ObjectNode getPlayerTurn() {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
@@ -610,6 +640,9 @@ public final class Game {
         return result;
     }
 
+    /**
+     *Show the player's hero.
+     */
     public ObjectNode getPlayerHero(final int playerIdx) {
         Player player;
         if (playerIdx == 1) {
@@ -630,6 +663,9 @@ public final class Game {
         return result;
     }
 
+    /**
+     *Show the card on board, at this position.
+     */
     public ObjectNode getCardAtPosition(final int x, final int y) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
@@ -669,7 +705,9 @@ public final class Game {
         return result;
     }
 
-
+    /**
+     *Show player's mana.
+     */
     public ObjectNode getPlayerMana(final int playerIdx) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
@@ -685,6 +723,9 @@ public final class Game {
         return result;
     }
 
+    /**
+     *Show frozen cards on table.
+     */
     public ObjectNode getFrozenCardsOnTable() {
         ObjectNode result = board.getFreezedOnBoard();
         result.put("command", "getFrozenCardsOnTable");

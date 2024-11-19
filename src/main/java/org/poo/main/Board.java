@@ -67,32 +67,13 @@ public final class Board {
     }
 
     /**
-     * Returns the first free position in the row or -1 if the row is full.
-     */
-    public void printBoard() {
-        System.out.println("Current board state:");
-        for (int i = 0; i < ROWS; i++) {
-            System.out.print("Row " + i + ": ");
-            for (int j = 0; j < COLUMNS; j++) {
-                if (board[i][j] != null) {
-                    System.out.print("[" + board[i][j].getName()
-                            + " HP:" + board[i][j].getHealth() + "] ");
-                } else {
-                    System.out.print("[Empty] ");
-                }
-            }
-            System.out.println();
-        }
-    }
-
-    /**
      * Resets the attack of each minion on the board.
      */
     public void resetHasAttackedForAllMinions() {
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLUMNS; j++) {
                 if (board[i][j] != null) {
-                    board[i][j].setHasAttacked(0); // Setați has_attacked la 0 pentru fiecare minion
+                    board[i][j].setHasAttacked(0);
                 }
             }
         }
@@ -130,21 +111,13 @@ public final class Board {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
 
-        // Adăugăm comanda la rezultat
         result.put("command", "getCardsOnTable");
-
-        // Creăm un ArrayNode pentru a stoca toate rândurile
         ArrayNode outputArray = mapper.createArrayNode();
 
-        // Parcurgem rândurile de la 0 la 3 în ordinea corectă
         for (int i = 0; i < ROWS; i++) {
-            // Creează un nou ArrayNode pentru fiecare rând
             ArrayNode rowArray = mapper.createArrayNode();
-
-            // Parcurgem coloanele de la 0 la 4 pentru fiecare rând
             for (int j = 0; j < COLUMNS; j++) {
-                Minion card = getCard(i, j);  // Obține cartea de la poziția (i, j)
-
+                Minion card = getCard(i, j);
                 if (card != null) {
                     ObjectNode cardNode = mapper.createObjectNode();
                     cardNode.put("mana", card.getMana());
@@ -152,26 +125,18 @@ public final class Board {
                     cardNode.put("health", card.getHealth());
                     cardNode.put("description", card.getDescription());
 
-                    // Adăugăm culorile cărții într-un ArrayNode
                     ArrayNode colors = mapper.createArrayNode();
                     for (String color : card.getColors()) {
                         colors.add(color);
                     }
                     cardNode.set("colors", colors);
                     cardNode.put("name", card.getName());
-
-                    // Adăugăm cartea la rândul curent (rowArray)
                     rowArray.add(cardNode);
                 }
             }
-
-            // Adaugă `rowArray` la `outputArray` fără inversare
             outputArray.add(rowArray);
         }
-
-        // Setăm lista de rânduri sub cheia "output" în `result`
         result.set("output", outputArray);
-
         return result;
     }
 

@@ -16,30 +16,51 @@ public class Minion extends Card {
         this.attackDamage = attackDamage;
     }
 
+    /**
+     * Get minion's health.
+     */
     public int getHealth() {
         return health;
     }
 
+    /**
+     * Set minion's health.
+     */
     public void setHealth(final int health) {
         this.health = health;
     }
 
+    /**
+     * Get minion's attack damage.
+     */
     public int getAttackDamage() {
         return attackDamage;
     }
 
+    /**
+     * Set minion's attack damage.
+     */
     public void setAttackDamage(final int attackDamage) {
         this.attackDamage = attackDamage;
     }
 
+    /**
+     * Get minion's HasAttacked.
+     */
     public int getHasAttacked() {
         return hasAttacked;
     }
 
+    /**
+     * Set minion's HasAttacked.
+     */
     public void setHasAttacked(final int hasAttacked) {
         this.hasAttacked = hasAttacked;
     }
 
+    /**
+     * Get minion's IsFrozen.
+     */
     public int getIsFrozen() {
         return isFrozen;
     }
@@ -98,8 +119,11 @@ public class Minion extends Card {
 
     }
 
+    /**
+     * Create a copy according the name of the minion.
+     */
     public Minion createMinion(final String name, final int mana, final String description,
-                               final ArrayList<String> colors, final int health, final int attackDamage) {
+                               final ArrayList<String> colors) {
         switch (name) {
             case "Disciple":
                 return new Disciple(name, mana, description, colors, health, attackDamage);
@@ -109,7 +133,7 @@ public class Minion extends Card {
                 return new TheCursedOne(name, mana, description, colors, health, attackDamage);
             case "The Ripper":
                 return new TheRipper(name, mana, description, colors, health, attackDamage);
+            default: return null;
         }
-        return null;
     }
 }

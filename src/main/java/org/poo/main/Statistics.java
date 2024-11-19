@@ -14,10 +14,16 @@ public final class Statistics {
         this.games = 0;
     }
 
+    /**
+     *Count the current game that ended.
+     */
     public void increaseGames() {
         games++;
     }
 
+    /**
+     *Count winner player's score.
+     */
     public void increaseWins(final int index) {
         if (index == 1) {
             wins1++;
@@ -26,6 +32,9 @@ public final class Statistics {
         }
     }
 
+    /**
+     *Show total games played.
+     */
     public ObjectNode getTotalGamesPlayedJson() {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
@@ -34,6 +43,9 @@ public final class Statistics {
         return result;
     }
 
+    /**
+     *Show player's wins.
+     */
     public ObjectNode getPlayerWinsJson(final int playerIdx) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
